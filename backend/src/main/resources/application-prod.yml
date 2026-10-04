@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USER}
+    password: ${DATABASE_PASSWORD}
+server:
+  servlet:
+    session:
+      cookie:
+        secure: true

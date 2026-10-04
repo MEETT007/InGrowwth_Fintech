@@ -1,0 +1,17 @@
+.tooling/
+node_modules/
+.next/
+target/
+.data/
+.env
+.env.local
+*.log
+mobile/.dart_tool/
+mobile/build/
+mobile/.flutter-plugins-dependencies
+
+.local/
+mobile/.idea/
+*.iml
+
+*.tsbuildinfo

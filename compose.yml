@@ -1,0 +1,55 @@
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: homefinance
+      POSTGRES_USER: homefinance
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?Set DATABASE_PASSWORD}
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U homefinance -d homefinance']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DATABASE_URL: jdbc:postgresql://db:5432/homefinance
+      DATABASE_USER: homefinance
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:?Set DATABASE_PASSWORD}
+      DOCUMENT_DIR: /app/data/documents
+    volumes:
+      - documents:/app/data
+    depends_on:
+      db:
+        condition: service_healthy
+  web:
+    build: ./web
+    restart: unless-stopped
+    environment:
+      JAVA_API_URL: http://backend:8080
+    depends_on:
+      - backend
+  gateway:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      PUBLIC_HOST: ${PUBLIC_HOST:?Set PUBLIC_HOST to your hostname}
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - certificates:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+volumes:
+  database:
+  documents:
+  certificates:
+  caddy_config:

@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:h2:file:./.data/homefinance;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password: ''
+server:
+  address: 127.0.0.1
+app:
+  demo-password: ${DEMO_PASSWORD:DemoHome!2026}

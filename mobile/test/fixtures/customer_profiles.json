@@ -1,0 +1,179 @@
+[
+  {
+    "customerId": "CUS-1001",
+    "basicInformation": {
+      "firstName": "Saurav",
+      "middleName": "Kumar",
+      "lastName": "Patel",
+      "fullName": "Saurav Kumar Patel",
+      "dateOfBirth": "1993-08-15",
+      "gender": "Male",
+      "maritalStatus": "Married",
+      "nationality": "Indian"
+    },
+    "panInformation": {
+      "panNumber": "QWERT1234L",
+      "recordStatus": "DEMO_RECORD",
+      "kycStatus": "DEMO_COMPLETE",
+      "verificationDate": "2026-10-01",
+      "recordSource": "Local SQLite synthetic demo data",
+      "customerType": "Individual"
+    },
+    "addressInformation": {
+      "mobileNumber": "9000000001",
+      "email": "customer1@example.invalid",
+      "addressLine": "100 Fictional Demo Avenue",
+      "city": "Ahmedabad",
+      "state": "Gujarat",
+      "pincode": "380015",
+      "country": "India"
+    },
+    "employmentInformation": {
+      "occupation": "Software Engineer",
+      "employmentType": "Salaried",
+      "employerName": "Synthetic Software Ltd",
+      "monthlyIncome": 85000,
+      "annualIncome": 1020000,
+      "experienceYears": 8,
+      "monthlyObligations": 8500
+    },
+    "creditProfile": {
+      "simulatedCreditScore": 782,
+      "creditRating": "Excellent",
+      "profileStatus": "SYNTHETIC_DEMO",
+      "activeLoans": 2,
+      "closedLoans": 3,
+      "outstandingLiabilities": 2450000,
+      "paymentHistoryPercentage": 99,
+      "creditUtilization": 18,
+      "recentEnquiries": 1
+    },
+    "homeLoans": [
+      {
+        "lenderName": "Demo Housing Finance",
+        "sanctionedAmount": 3000000,
+        "disbursedAmount": 3000000,
+        "outstandingPrincipal": 2300000,
+        "interestRate": 8.35,
+        "monthlyEmi": 25750,
+        "remainingTenureMonths": 144,
+        "nextDueDate": "2026-11-05",
+        "loanStatus": "DEMO_ACTIVE"
+      }
+    ]
+  },
+  {
+    "customerId": "CUS-1002",
+    "basicInformation": {
+      "firstName": "Priya",
+      "middleName": null,
+      "lastName": "Sharma",
+      "fullName": "Priya Sharma",
+      "dateOfBirth": "1995-03-22",
+      "gender": "Female",
+      "maritalStatus": "Single",
+      "nationality": "Indian"
+    },
+    "panInformation": {
+      "panNumber": "PLMNO5678K",
+      "recordStatus": "DEMO_RECORD",
+      "kycStatus": "DEMO_COMPLETE",
+      "verificationDate": "2026-10-01",
+      "recordSource": "Local SQLite synthetic demo data",
+      "customerType": "Individual"
+    },
+    "addressInformation": {
+      "mobileNumber": "9000000002",
+      "email": "customer2@example.invalid",
+      "addressLine": "125 Fictional Demo Avenue",
+      "city": "Pune",
+      "state": "Maharashtra",
+      "pincode": "411001",
+      "country": "India"
+    },
+    "employmentInformation": {
+      "occupation": "Business Analyst",
+      "employmentType": "Salaried",
+      "employerName": "Demo Analytics Ltd",
+      "monthlyIncome": 65000,
+      "annualIncome": 780000,
+      "experienceYears": 6,
+      "monthlyObligations": 12000
+    },
+    "creditProfile": {
+      "simulatedCreditScore": 715,
+      "creditRating": "Good",
+      "profileStatus": "SYNTHETIC_DEMO",
+      "activeLoans": 1,
+      "closedLoans": 2,
+      "outstandingLiabilities": 1250000,
+      "paymentHistoryPercentage": 96,
+      "creditUtilization": 32,
+      "recentEnquiries": 2
+    },
+    "homeLoans": [
+      {
+        "lenderName": "Synthetic Home Bank",
+        "sanctionedAmount": 1800000,
+        "disbursedAmount": 1600000,
+        "outstandingPrincipal": 1100000,
+        "interestRate": 8.75,
+        "monthlyEmi": 16500,
+        "remainingTenureMonths": 96,
+        "nextDueDate": "2026-11-05",
+        "loanStatus": "DEMO_ACTIVE"
+      }
+    ]
+  },
+  {
+    "customerId": "CUS-1003",
+    "basicInformation": {
+      "firstName": "Rahul",
+      "middleName": null,
+      "lastName": "Mehta",
+      "fullName": "Rahul Mehta",
+      "dateOfBirth": "1990-11-09",
+      "gender": "Male",
+      "maritalStatus": "Married",
+      "nationality": "Indian"
+    },
+    "panInformation": {
+      "panNumber": "ZXCVB9012M",
+      "recordStatus": "DEMO_RECORD",
+      "kycStatus": "DEMO_COMPLETE",
+      "verificationDate": "2026-10-01",
+      "recordSource": "Local SQLite synthetic demo data",
+      "customerType": "Individual"
+    },
+    "addressInformation": {
+      "mobileNumber": "9000000003",
+      "email": "customer3@example.invalid",
+      "addressLine": "150 Fictional Demo Avenue",
+      "city": "Jaipur",
+      "state": "Rajasthan",
+      "pincode": "302001",
+      "country": "India"
+    },
+    "employmentInformation": {
+      "occupation": "Accountant",
+      "employmentType": "Salaried",
+      "employerName": "Fictional Accounts Ltd",
+      "monthlyIncome": 45000,
+      "annualIncome": 540000,
+      "experienceYears": 10,
+      "monthlyObligations": 16000
+    },
+    "creditProfile": {
+      "simulatedCreditScore": 642,
+      "creditRating": "Fair",
+      "profileStatus": "SYNTHETIC_DEMO",
+      "activeLoans": 3,
+      "closedLoans": 1,
+      "outstandingLiabilities": 680000,
+      "paymentHistoryPercentage": 88,
+      "creditUtilization": 58,
+      "recentEnquiries": 4
+    },
+    "homeLoans": []
+  }
+]

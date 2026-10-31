@@ -48,6 +48,7 @@ class Security {
                         "/api/auth/register",
                         "/api/planner",
                         "/api/refinance",
+                        "/api/health",
                         "/actuator/health")
                     .permitAll()
                     .anyRequest()

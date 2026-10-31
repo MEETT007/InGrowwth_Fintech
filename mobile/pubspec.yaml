@@ -1,12 +1,13 @@
 name: home_finance
-description: "A new Flutter project."
+description: "HomeEase AI — standalone home-loan planning for web and mobile."
 publish_to: 'none'
 version: 0.1.0+1
 
 environment:
-  sdk: ^3.13.5
+  sdk: ^3.10.0
 
 dependencies:
+  http: ^1.6.0
   flutter:
     sdk: flutter
 
@@ -17,3 +18,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+
+

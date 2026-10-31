@@ -1,27 +1,43 @@
-# InGrowwth Home Finance mobile
+# HomeEase AI
 
-Flutter companion to the Java/Next.js project in the parent directory. Android and iOS runner projects are included. See the parent README for the complete product, accounts, database and integration boundaries.
+Standalone Flutter home-loan planning app for Chrome and Android. No banking, authentication, SMS, payment or Java service is called.
 
-From this directory:
+## Run
+
+From mobile:
 
 ```sh
 flutter pub get
+flutter run -d chrome -t lib/main.dart
+flutter run -d emulator-5554 -t lib/main.dart
+flutter build web
 flutter analyze
 flutter test
-# iOS simulator (requires Xcode and simulator SDK)
-flutter run --dart-define=API_URL=http://127.0.0.1:8080
-# Android emulator (requires Android SDK)
-flutter run --dart-define=API_URL=http://10.0.2.2:8080
-# Hosted HTTPS deployment
-flutter run --dart-define=API_URL=https://your-home-finance-host.example
 ```
 
-Shared borrower sign-in, live loan tracking, clarifications, pre-EMI/EMI/principal requests, cancellation, closure status, and repayment comparisons are implemented. Application creation and private document uploads/downloads use the web portal. The mobile app stores session cookies only in memory and requires sign-in again when reopened. Staff should use the web review workspace.
+Use any valid Indian mobile number (10 digits, beginning with 6–9) and demo OTP **123456**. Number **8200229099** opens an isolated pending destination; its business flow is intentionally unspecified. No SMS is delivered. Login and calculator state are in memory. Sign out ends the session; Reset demo clears borrower inputs after confirmation.
 
-The Dart transport smoke test connects to the actual Java service:
+## Structure
 
-```sh
-dart run tool/api_smoke.dart
-```
+- `lib/app`: app entry and responsive navigation; an IndexedStack preserves each tab's input state.
+- `lib/core/theme`: centralized sky-blue/white palette, typography, spacing and light theme. Secondary text and semantic status colors use darker accessible variants of the suggested palette.
+- `lib/core/strings`: centralized visible product text.
+- `lib/core/widgets`: shared fields, cards, metrics, grids and breakdown bars.
+- `lib/features`: splash, local OTP authentication, dashboard, My Loan, EMI Protection, repayment and Help & Insights.
+- `lib/models`, `lib/data`: typed loan/user/payment data and fictional repositories.
+- `lib/services`: independent financial engines; integer paise, integer basis-point rates, monthly half-up interest rounding.
+- `lib/legacy`: preserved previous demo for historical regression tests; not used by the HomeEase entry point. The compatibility api.dart export has no network implementation.
 
-The Flutter widget suite covers a small phone, landscape at 200% text size with reduced motion, light/dark contrast, input reachability, calculation and stale-result disclosure. Native release builds have not been verified on this machine; its platform SDKs are unavailable.
+Related small features share string/widget files instead of empty per-feature boilerplate. Flutter's built-in ChangeNotifier manages authentication, while screen-local state manages calculators; no extra state-management dependency is used.
+
+## Calculation assumptions
+
+EMI is the smallest paise payment that repays the balance in the selected number of monthly cycles. Interest uses monthly reducing balance. Prepayments follow the scheduled payment; one-time contributions post in the chosen month. The final payment is capped to the amount owed. Rate reset happens before the selected month's payment. Choose whether EMI or tenure adjusts; the tool never guarantees unchanged EMI. Protection contributions stop at reset. With the maintain-tenure policy, the scheduled EMI also recalculates after each prepayment. Cash-reserve comparisons assume no returns and no principal reduction.
+
+Target EMI uses a bounded binary search over monthly contributions before reset. This is a model estimate, not an affordability recommendation. Repayment planning shows entered income, expenses, reserve coverage and a separate lump sum. Rates, taxes, lender rules and fees must be confirmed independently.
+
+The charge analyzer leaves unknown fees unknown. Its subtotal excludes unknowns. Entered tax applies only to entered return and flat penal fees, while overdue interest is simple amount × annual rate × days/365. Users must verify contract terms and tax basis. Waiver text is editable and can be copied; nothing is submitted.
+
+Loan Freedom Score is only the share of original principal repaid, labelled as internal guidance, not a credit score. All customer/lender/payment/rate history records are fictional.
+
+Web rendering assets are served locally using web/flutter_bootstrap.js; no external fonts or business-service calls are required. Initial package/tool downloads require connectivity. Native iOS runner remains present, but this Windows environment cannot validate iOS builds.

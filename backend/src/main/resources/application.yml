@@ -28,4 +28,5 @@ management:
     health:
       show-details: never
 app:
+  employee-database: ${EMPLOYEE_DATABASE:./.data/employee-demo.sqlite}
   documents: ${DOCUMENT_DIR:./.data/documents}

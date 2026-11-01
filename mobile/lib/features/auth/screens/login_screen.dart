@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+import '../controllers/login_controller.dart';
 import '../../../services/pan_lookup_service.dart';
 import '../../../core/constants/demo_config.dart';
 import '../../../core/widgets/app_dropdown.dart';
@@ -18,20 +20,22 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final phone = TextEditingController();
-  String? error;
+  final controller = LoginController()..onStart.call();
+  TextEditingController get phone => controller.phone;
+  String? get error => controller.error;
+  set error(String? value) => controller.error = value;
   @override
   void dispose() {
-    phone.dispose();
+    controller.onDelete();
     super.dispose();
   }
 
   Future<void> getOtp() async {
     if (!widget.auth.repository.validMobile(phone.text)) {
-      setState(() => error = S.invalidMobile);
+      controller.change(() => error = S.invalidMobile);
       return;
     }
-    setState(() => error = null);
+    controller.change(() => error = null);
     await showDialog<void>(
       context: context,
       builder: (_) => Dialog(
@@ -45,7 +49,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => GetBuilder<LoginController>(
+    init: controller,
+    global: false,
+    autoRemove: false,
+    builder: (_) => buildContent(context),
+  );
+
+  Widget buildContent(BuildContext context) => Scaffold(
     body: AppBackdrop(
       child: SafeArea(
         child: Center(
@@ -90,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
-                        width: 108,
+                        width: 76,
                         child: AppDropdown<String>(
                           compact: true,
                           value: '+91',
@@ -151,21 +162,25 @@ class OtpDialog extends StatefulWidget {
 }
 
 class _OtpDialogState extends State<OtpDialog> {
-  final code = TextEditingController();
-  String? error;
-  bool resent = false;
+  final controller = OtpController()..onStart.call();
+  TextEditingController get code => controller.code;
+  String? get error => controller.error;
+  set error(String? value) => controller.error = value;
+  bool get resent => controller.resent;
+  set resent(bool value) => controller.resent = value;
+  bool get verifying => controller.verifying;
+  set verifying(bool value) => controller.verifying = value;
   @override
   void dispose() {
-    code.dispose();
+    controller.onDelete();
     super.dispose();
   }
 
-  bool verifying = false;
   Future<void> verify() async {
     if (verifying) return;
     if (widget.mobile == DemoConfig.specialMobile &&
         code.text == DemoConfig.otp) {
-      setState(() => verifying = true);
+      controller.change(() => verifying = true);
       final api = PanLookupService();
       try {
         await api.signIn(widget.mobile, code.text);
@@ -177,7 +192,7 @@ class _OtpDialogState extends State<OtpDialog> {
       } catch (_) {
         api.close();
         if (mounted) {
-          setState(() {
+          controller.change(() {
             verifying = false;
             error = 'Employee sign-in failed. Start the backend and try again.';
           });
@@ -189,12 +204,19 @@ class _OtpDialogState extends State<OtpDialog> {
     if (widget.auth.verify(widget.mobile, code.text)) {
       Navigator.pop(context);
     } else {
-      setState(() => error = S.invalidOtp);
+      controller.change(() => error = S.invalidOtp);
     }
   }
 
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context) => GetBuilder<OtpController>(
+    init: controller,
+    global: false,
+    autoRemove: false,
+    builder: (_) => buildContent(context),
+  );
+
+  Widget buildContent(BuildContext context) => Padding(
     padding: const EdgeInsets.all(24),
     child: SingleChildScrollView(
       child: Center(
@@ -244,7 +266,7 @@ class _OtpDialogState extends State<OtpDialog> {
               const InfoNote(S.demoOtp),
               if (resent) const InfoNote(S.resent),
               TextButton(
-                onPressed: () => setState(() {
+                onPressed: () => controller.change(() {
                   code.clear();
                   error = null;
                   resent = true;
@@ -262,4 +284,3 @@ class _OtpDialogState extends State<OtpDialog> {
     ),
   );
 }
-

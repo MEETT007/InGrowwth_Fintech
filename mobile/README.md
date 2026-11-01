@@ -17,7 +17,13 @@ flutter test
 
 Use any valid Indian mobile number (10 digits, beginning with 6–9) and demo OTP **123456**. Number **8200229099** opens an isolated pending destination; its business flow is intentionally unspecified. No SMS is delivered. Login and calculator state are in memory. Sign out ends the session; Reset demo clears borrower inputs after confirmation.
 
-## Structure
+## App icon
+
+Android and iOS launcher icons use `assets/branding/homeease-ai-icon-blue-glass-transparent-v3.png` on a pure white background (`#FFFFFF`). The source artwork and Android adaptive foreground remain transparent, with safe padding for launcher masks. iOS icons are opaque.
+
+To regenerate all native sizes on Windows, run `./scripts/generate-app-icons.ps1` from `mobile`. Rebuild and reinstall the app to see icon changes; hot reload does not update launcher resources.
+
+## Source layout
 
 - `lib/app`: app entry and responsive navigation; an IndexedStack preserves each tab's input state.
 - `lib/core/theme`: centralized sky-blue/white palette, typography, spacing and light theme. Secondary text and semantic status colors use darker accessible variants of the suggested palette.
@@ -28,7 +34,7 @@ Use any valid Indian mobile number (10 digits, beginning with 6–9) and demo OT
 - `lib/services`: independent financial engines; integer paise, integer basis-point rates, monthly half-up interest rounding.
 - `lib/legacy`: preserved previous demo for historical regression tests; not used by the HomeEase entry point. The compatibility api.dart export has no network implementation.
 
-Related small features share string/widget files instead of empty per-feature boilerplate. Flutter's built-in ChangeNotifier manages authentication, while screen-local state manages calculators; no extra state-management dependency is used.
+Related small features share string/widget files instead of empty per-feature boilerplate. GetX (`get` 4.7.3) manages the active application's state using `GetxController` and `GetBuilder`: authentication, splash readiness, selected tab, login/OTP forms, employee PAN lookup, loan-table selection, EMI protection, repayment planning and charge analysis. Calculation inputs/results live in dedicated feature controllers. Controllers are scoped to their owning widget and closed on disposal, avoiding shared state between sessions or dialogs. `IndexedStack` still preserves each tab's inputs. Flutter widget lifecycle remains responsible for animations, menu anchors and the splash timer; the historical legacy demo remains unchanged. MaterialApp, navigation, theme, visual widgets, APIs and financial services are preserved.
 
 ## Calculation assumptions
 

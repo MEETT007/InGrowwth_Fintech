@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'pan_details_controller.dart';
 import '../../core/utils/currency_formatter.dart';
 import '../../core/theme/app_colors.dart';
@@ -24,18 +25,12 @@ class _PanDetailsScreenState extends State<PanDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    controller = PanDetailsController(widget.auth.employeeApi)
-      ..addListener(update);
-  }
-
-  void update() {
-    if (mounted) setState(() {});
+    controller = PanDetailsController(widget.auth.employeeApi)..onStart.call();
   }
 
   @override
   void dispose() {
-    controller.removeListener(update);
-    controller.dispose();
+    controller.onDelete();
     pan.dispose();
     super.dispose();
   }
@@ -124,7 +119,14 @@ class _PanDetailsScreenState extends State<PanDetailsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => AppBackdrop(
+  Widget build(BuildContext context) => GetBuilder<PanDetailsController>(
+    init: controller,
+    global: false,
+    autoRemove: false,
+    builder: (_) => buildContent(context),
+  );
+
+  Widget buildContent(BuildContext context) => AppBackdrop(
     child: Scaffold(
       backgroundColor: AppColors.transparent,
       appBar: AppBar(
@@ -179,7 +181,12 @@ class _PanDetailsScreenState extends State<PanDetailsScreen> {
                   const SizedBox(height: 16),
                   FilledButton(
                     style: FilledButton.styleFrom(
-                      side: const BorderSide(color: AppColors.black),
+                      elevation: 0,
+                      minimumSize: const Size.fromHeight(52),
+                      side: BorderSide.none,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
                     onPressed: loading ? null : fetch,
                     child: const Text('Fetch PAN Details'),
@@ -189,10 +196,13 @@ class _PanDetailsScreenState extends State<PanDetailsScreen> {
                     style: OutlinedButton.styleFrom(
                       backgroundColor: AppColors.white,
                       foregroundColor: AppColors.deepBlue,
-                      side: const BorderSide(color: AppColors.black),
-                      minimumSize: const Size.fromHeight(48),
+                      side: BorderSide(
+                        color: AppColors.secondary.withValues(alpha: 0.35),
+                        width: 1,
+                      ),
+                      minimumSize: const Size.fromHeight(52),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                     ),
                     onPressed: loading

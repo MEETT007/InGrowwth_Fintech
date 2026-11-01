@@ -35,7 +35,7 @@ void main() {
       expect(tester.getSize(error).height, greaterThan(30));
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
-      auth.dispose();
+      auth.onDelete();
     },
   );
 }

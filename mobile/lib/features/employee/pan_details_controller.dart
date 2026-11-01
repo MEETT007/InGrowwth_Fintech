@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import '../../services/pan_lookup_service.dart';
 
-class PanDetailsController extends ChangeNotifier {
+class PanDetailsController extends GetxController {
   PanDetailsController(this.api);
   final PanLookupService? api;
   bool loading = false;
@@ -12,7 +12,7 @@ class PanDetailsController extends ChangeNotifier {
     if (loading) return;
     customer = null;
     error = null;
-    notifyListeners();
+    update();
   }
 
   Future<void> fetch(String input) async {
@@ -21,11 +21,11 @@ class PanDetailsController extends ChangeNotifier {
     error = null;
     if (!PanLookupService.valid(input)) {
       error = 'Enter a valid PAN, for example QWERT1234L.';
-      notifyListeners();
+      update();
       return;
     }
     loading = true;
-    notifyListeners();
+    update();
     try {
       if (api == null) {
         throw Exception('Employee session unavailable. Please sign in again.');
@@ -37,14 +37,14 @@ class PanDetailsController extends ChangeNotifier {
     } finally {
       if (!_disposed) {
         loading = false;
-        notifyListeners();
+        update();
       }
     }
   }
 
   @override
-  void dispose() {
+  void onClose() {
     _disposed = true;
-    super.dispose();
+    super.onClose();
   }
 }

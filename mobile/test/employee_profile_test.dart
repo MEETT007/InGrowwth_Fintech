@@ -55,7 +55,7 @@ void main() {
       expect(controller.error, contains('No customer'));
       controller.clear();
       expect(controller.error, isNull);
-      controller.dispose();
+      controller.onDelete();
       api.close();
     },
   );
@@ -124,7 +124,7 @@ void main() {
         );
         await tester.pumpWidget(const SizedBox());
         auth.logout();
-        auth.dispose();
+        auth.onDelete();
       },
     );
   }

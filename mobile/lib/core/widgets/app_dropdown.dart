@@ -23,10 +23,14 @@ class AppDropdown<T> extends StatefulWidget {
 
 class _AppDropdownState<T> extends State<AppDropdown<T>> {
   final controller = MenuController();
+  bool _focused = false;
+  bool _open = false;
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, bounds) => MenuAnchor(
       controller: controller,
+      onOpen: () => setState(() => _open = true),
+      onClose: () => setState(() => _open = false),
       crossAxisUnconstrained: false,
       style: MenuStyle(
         alignment: Alignment.bottomLeft,
@@ -78,6 +82,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
         label: widget.label,
         value: widget.options[widget.value],
         child: InkWell(
+          onFocusChange: (focused) => setState(() => _focused = focused),
           borderRadius: BorderRadius.circular(14),
           hoverColor: AppColors.transparent,
           focusColor: AppColors.transparent,
@@ -91,6 +96,7 @@ class _AppDropdownState<T> extends State<AppDropdown<T>> {
             }
           },
           child: InputDecorator(
+            isFocused: _focused || _open,
             isEmpty: false,
             decoration: InputDecoration(
               labelText: widget.label,

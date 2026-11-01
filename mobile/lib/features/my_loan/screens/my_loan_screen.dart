@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+import 'loan_table_controller.dart';
 import '../../../data/mock/mock_payments.dart';
 import '../../../data/mock/mock_interest_rates.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +19,26 @@ class MyLoanScreen extends StatefulWidget {
 }
 
 class _MyLoanScreenState extends State<MyLoanScreen> {
-  int page = 0, selected = 0;
+  final controller = LoanTableController()..onStart.call();
+  int get page => controller.page;
+  set page(int value) => controller.page = value;
+  int get selected => controller.selected;
+  set selected(int value) => controller.selected = value;
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    controller.onDelete();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => GetBuilder<LoanTableController>(
+    init: controller,
+    global: false,
+    autoRemove: false,
+    builder: (_) => buildContent(context),
+  );
+
+  Widget buildContent(BuildContext context) {
     final l = widget.loan, engine = EmiCalculatorService();
     final plan = engine.schedule(
       principal: l.balance,
@@ -100,7 +119,7 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                         (r) => DataRow(
                           selected: r.month == selected + 1,
                           onSelectChanged: (_) =>
-                              setState(() => selected = r.month - 1),
+                              controller.change(() => selected = r.month - 1),
                           cells: [
                             S.monthNumber(r.month),
                             currency(r.opening),
@@ -119,14 +138,16 @@ class _MyLoanScreenState extends State<MyLoanScreen> {
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   TextButton(
-                    onPressed: page == 0 ? null : () => setState(() => page--),
+                    onPressed: page == 0
+                        ? null
+                        : () => controller.change(() => page--),
                     child: Text(S.previous),
                   ),
                   Text('${page + 1} / ${(plan.months / 12).ceil()}'),
                   TextButton(
                     onPressed: (page + 1) * 12 >= plan.months
                         ? null
-                        : () => setState(() => page++),
+                        : () => controller.change(() => page++),
                     child: Text(S.next),
                   ),
                 ],

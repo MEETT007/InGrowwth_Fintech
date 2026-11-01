@@ -15,6 +15,8 @@ A working home-loan portfolio product with a Java banking service, a Next.js bor
 
 ## Local preview
 
+For the employee PAN Fetch flow backed by **SQLite**, run `./scripts/start-employee.ps1` on Windows. See [SQLite setup, architecture, and client demonstration](docs/SQLITE-PAN-SETUP.md) for database configuration, preloaded PANs, Flutter connection, and inspection steps. This uses the standalone employee Java entry point; the borrower preview below uses its separate database configuration.
+
 Run `./scripts/start-local.sh` from this project. It discovers the workspace-local Java 21 and Maven runtimes where available, or uses Java 21/Maven from your environment. Node 22+ and `npm` are required. The first Maven/npm run needs network access.
 
 Open **http://127.0.0.1:3001**. The Java service runs on **http://127.0.0.1:8080**.

@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+import 'shell_controller.dart';
 import 'package:flutter/material.dart';
 import '../core/strings/app_strings.dart';
 import '../core/theme/app_theme.dart';
@@ -12,21 +14,29 @@ class HomeEaseApp extends StatefulWidget {
 }
 
 class _HomeEaseAppState extends State<HomeEaseApp> {
-  final auth = AuthController();
-  bool ready = false;
+  final auth = AuthController()..onStart.call();
+  final controller = AppController()..onStart.call();
   @override
   void dispose() {
-    auth.dispose();
+    auth.onDelete();
+    controller.onDelete();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
+  Widget build(BuildContext context) => GetBuilder<AppController>(
+    init: controller,
+    global: false,
+    autoRemove: false,
+    builder: (_) => buildContent(context),
+  );
+
+  Widget buildContent(BuildContext context) => MaterialApp(
     title: S.brand,
     debugShowCheckedModeBanner: false,
     theme: AppTheme.light,
-    home: ready
+    home: controller.ready
         ? AppRouter(auth: auth)
-        : SplashScreen(onComplete: () => setState(() => ready = true)),
+        : SplashScreen(onComplete: controller.finishSplash),
   );
 }

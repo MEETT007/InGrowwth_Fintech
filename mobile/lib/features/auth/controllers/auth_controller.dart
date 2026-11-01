@@ -1,9 +1,9 @@
 import '../../../services/pan_lookup_service.dart';
-import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../models/user_model.dart';
 
-class AuthController extends ChangeNotifier {
+class AuthController extends GetxController {
   final repository = AuthRepository();
   UserModel? user;
   PanLookupService? employeeApi;
@@ -11,7 +11,7 @@ class AuthController extends ChangeNotifier {
     final next = repository.verify(mobile, otp);
     if (next == null) return false;
     user = next;
-    notifyListeners();
+    update();
     return true;
   }
 
@@ -19,6 +19,13 @@ class AuthController extends ChangeNotifier {
     employeeApi?.close();
     employeeApi = null;
     user = null;
-    notifyListeners();
+    update();
+  }
+
+  @override
+  void onClose() {
+    employeeApi?.close();
+    employeeApi = null;
+    super.onClose();
   }
 }

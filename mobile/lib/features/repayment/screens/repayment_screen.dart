@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+import '../controllers/repayment_controller.dart';
 import 'package:flutter/material.dart';
 import '../../../models/loan_model.dart';
 import '../../../models/repayment_plan_model.dart';
@@ -5,7 +7,6 @@ import '../../../core/strings/app_strings.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../core/widgets/app_widgets.dart';
-import '../../../services/emi_calculator_service.dart';
 
 class RepaymentScreen extends StatefulWidget {
   const RepaymentScreen({super.key, required this.loan});
@@ -15,83 +16,37 @@ class RepaymentScreen extends StatefulWidget {
 }
 
 class _RepaymentScreenState extends State<RepaymentScreen> {
-  final extra = TextEditingController(text: '2000'),
-      lump = TextEditingController(text: '50000'),
-      lumpMonth = TextEditingController(text: '12'),
-      increase = TextEditingController(text: '0'),
-      income = TextEditingController(text: '100000'),
-      expenses = TextEditingController(text: '45000'),
-      reserve = TextEditingController(text: '300000');
-  RepaymentPlan? base, shorter, lower;
-  String? error;
-  bool dirty = true;
-  int commitment = 0, headroom = 0, appliedLump = 0;
-  double reserveMonths = 0;
+  late final RepaymentController controller;
+  @override
+  void initState() {
+    super.initState();
+    controller = RepaymentController(widget.loan)..onStart.call();
+  }
+
   @override
   void dispose() {
-    for (final c in [
-      extra,
-      lump,
-      lumpMonth,
-      increase,
-      income,
-      expenses,
-      reserve,
-    ]) {
-      c.dispose();
-    }
+    controller.onDelete();
     super.dispose();
   }
 
-  void changed() => setState(() => dirty = true);
-  void calculate() {
-    try {
-      final x = parseMoney(extra.text),
-          l = parseMoney(lump.text),
-          m = int.tryParse(lumpMonth.text),
-          v = parseMoney(increase.text),
-          i = parseMoney(income.text),
-          e = parseMoney(expenses.text),
-          r = parseMoney(reserve.text);
-      if ([x, l, m, v, i, e, r].any((v) => v == null) || e == 0) {
-        throw const FormatException();
-      }
-      final loan = widget.loan, engine = EmiCalculatorService();
-      final emi = engine.emi(loan.balance, loan.rateBps, loan.months);
-      final b = engine.schedule(
-        principal: loan.balance,
-        rateBps: loan.rateBps,
-        months: loan.months,
-      );
-      RepaymentPlan plan(AdjustmentPolicy policy) => engine.schedule(
-        principal: loan.balance,
-        rateBps: loan.rateBps,
-        months: loan.months,
-        payment: emi + v!,
-        monthlyExtra: x!,
-        lump: l!,
-        lumpMonth: m!,
-        policy: policy,
-      );
-      final a = plan(AdjustmentPolicy.tenure), c = plan(AdjustmentPolicy.emi);
-      setState(() {
-        base = b;
-        shorter = a;
-        lower = c;
-        commitment = emi + v! + x!;
-        appliedLump = l!;
-        headroom = i! - e!;
-        reserveMonths = r! / e;
-        dirty = false;
-        error = null;
-      });
-    } on FormatException {
-      setState(() => error = S.invalid);
-    } on StateError {
-      setState(() => error = S.noAmortization);
-    }
-  }
-
+  TextEditingController get extra => controller.extra;
+  TextEditingController get lump => controller.lump;
+  TextEditingController get lumpMonth => controller.lumpMonth;
+  TextEditingController get increase => controller.increase;
+  TextEditingController get income => controller.income;
+  TextEditingController get expenses => controller.expenses;
+  TextEditingController get reserve => controller.reserve;
+  RepaymentPlan? get base => controller.base;
+  RepaymentPlan? get shorter => controller.shorter;
+  RepaymentPlan? get lower => controller.lower;
+  String? get error => controller.error;
+  bool get dirty => controller.dirty;
+  int get commitment => controller.commitment;
+  int get headroom => controller.headroom;
+  int get appliedLump => controller.appliedLump;
+  double get reserveMonths => controller.reserveMonths;
+  void changed() => controller.changed();
+  void calculate() => controller.calculate();
   Widget comparison(String title, RepaymentPlan p) => AppCard(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +72,14 @@ class _RepaymentScreenState extends State<RepaymentScreen> {
     ),
   );
   @override
-  Widget build(BuildContext context) => PageBody(
+  Widget build(BuildContext context) => GetBuilder<RepaymentController>(
+    init: controller,
+    global: false,
+    autoRemove: false,
+    builder: (_) => buildContent(context),
+  );
+
+  Widget buildContent(BuildContext context) => PageBody(
     title: S.repayHeading,
     subtitle: S.repaySubtitle,
     children: [

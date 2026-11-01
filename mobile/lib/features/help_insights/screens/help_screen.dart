@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+import '../controllers/help_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../models/loan_model.dart';
@@ -6,7 +8,6 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../../../core/widgets/app_widgets.dart';
 import '../../../services/charge_analyzer_service.dart';
-import '../../../services/emi_calculator_service.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key, required this.loan});
@@ -61,88 +62,40 @@ class ChargeAnalyzer extends StatefulWidget {
 }
 
 class _ChargeAnalyzerState extends State<ChargeAnalyzer> {
-  late final TextEditingController emi, overdue;
-  final days = TextEditingController(text: '10'),
-      lender = TextEditingController(),
-      product = TextEditingController(),
-      returned = TextEditingController(),
-      penal = TextEditingController(),
-      tax = TextEditingController(),
-      rate = TextEditingController(),
-      reason = TextEditingController(),
-      draft = TextEditingController();
-  ChargeEstimate? result;
-  String? error;
-  bool contractual = false, dirty = true;
-  int enteredOverdue = 0;
+  late final ChargeAnalyzerController controller;
   @override
   void initState() {
     super.initState();
-    final l = widget.loan;
-    emi = TextEditingController(
-      text: (EmiCalculatorService().emi(l.balance, l.rateBps, l.months) / 100)
-          .toStringAsFixed(2),
-    );
-    overdue = TextEditingController(text: emi.text);
-    lender.text = l.lender;
-    product.text = l.nickname;
+    controller = ChargeAnalyzerController(widget.loan)..onStart.call();
   }
 
   @override
   void dispose() {
-    for (final c in [
-      emi,
-      overdue,
-      days,
-      lender,
-      product,
-      returned,
-      penal,
-      tax,
-      rate,
-      reason,
-      draft,
-    ]) {
-      c.dispose();
-    }
+    controller.onDelete();
     super.dispose();
   }
 
-  void changed() => setState(() => dirty = true);
-  void calculate() {
-    try {
-      final o = parseMoney(overdue.text),
-          e = parseMoney(emi.text),
-          d = int.tryParse(days.text);
-      int? optional(TextEditingController c) {
-        if (c.text.trim().isEmpty) return null;
-        final v = parseMoney(c.text);
-        if (v == null) throw const FormatException();
-        return v;
-      }
-
-      if (o == null || e == null || e <= 0 || d == null) {
-        throw const FormatException();
-      }
-      final next = ChargeAnalyzerService().calculate(
-        overdue: o,
-        days: d,
-        returnFee: optional(returned),
-        penal: optional(penal),
-        taxBps: optional(tax),
-        overdueRateBps: optional(rate),
-      );
-      setState(() {
-        result = next;
-        enteredOverdue = o;
-        dirty = false;
-        error = null;
-      });
-    } on FormatException {
-      setState(() => error = S.invalid);
-    }
-  }
-
+  TextEditingController get emi => controller.emi;
+  TextEditingController get overdue => controller.overdue;
+  TextEditingController get days => controller.days;
+  TextEditingController get lender => controller.lender;
+  TextEditingController get product => controller.product;
+  TextEditingController get returned => controller.returned;
+  TextEditingController get penal => controller.penal;
+  TextEditingController get tax => controller.tax;
+  TextEditingController get rate => controller.rate;
+  TextEditingController get reason => controller.reason;
+  TextEditingController get draft => controller.draft;
+  ChargeEstimate? get result => controller.result;
+  String? get error => controller.error;
+  set error(String? value) => controller.error = value;
+  bool get contractual => controller.contractual;
+  set contractual(bool value) => controller.contractual = value;
+  bool get dirty => controller.dirty;
+  set dirty(bool value) => controller.dirty = value;
+  int get enteredOverdue => controller.enteredOverdue;
+  void changed() => controller.changed();
+  void calculate() => controller.calculate();
   Widget item(String name, int? value) => ListTile(
     contentPadding: EdgeInsets.zero,
     title: Text(name),
@@ -156,7 +109,14 @@ class _ChargeAnalyzerState extends State<ChargeAnalyzer> {
     trailing: value == null ? null : Text(currency(value, decimals: true)),
   );
   @override
-  Widget build(BuildContext context) => AppCard(
+  Widget build(BuildContext context) => GetBuilder<ChargeAnalyzerController>(
+    init: controller,
+    global: false,
+    autoRemove: false,
+    builder: (_) => buildContent(context),
+  );
+
+  Widget buildContent(BuildContext context) => AppCard(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -191,7 +151,7 @@ class _ChargeAnalyzerState extends State<ChargeAnalyzer> {
           title: Text(S.contractual),
           subtitle: Text(S.source),
           value: contractual,
-          onChanged: (v) => setState(() {
+          onChanged: (v) => controller.change(() {
             contractual = v;
             dirty = true;
           }),
@@ -228,10 +188,10 @@ class _ChargeAnalyzerState extends State<ChargeAnalyzer> {
         OutlinedButton(
           onPressed: () {
             if (reason.text.trim().length < 5) {
-              setState(() => error = S.reasonError);
+              controller.change(() => error = S.reasonError);
               return;
             }
-            setState(() {
+            controller.change(() {
               error = null;
               draft.text = S.waiverText(reason.text.trim());
             });

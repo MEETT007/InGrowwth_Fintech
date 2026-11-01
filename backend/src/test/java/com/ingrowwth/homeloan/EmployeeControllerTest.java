@@ -59,5 +59,23 @@ class EmployeeControllerTest {
   mvc.perform(get("/api/employee/customers/absent").header("Authorization",auth)).andExpect(status().isNotFound());
   mvc.perform(get("/api/health")).andExpect(status().isOk()).andExpect(jsonPath("$.data.database").value("UP"));
  }
+ @Test void lookupReadsPersistedDatabaseInsteadOfSeedFile()throws Exception{
+  String auth="Bearer "+token();
+  try(var c=repository.open();var read=c.prepareStatement("SELECT basic_json FROM customers WHERE customer_id=?")){
+   read.setString(1,"CUS-1001");
+   String original;
+   try(var rs=read.executeQuery()){assertTrue(rs.next());original=rs.getString(1);}
+   var changed=json.readTree(original);((com.fasterxml.jackson.databind.node.ObjectNode)changed).put("fullName","SQLite persistence proof");
+   try(var update=c.prepareStatement("UPDATE customers SET basic_json=? WHERE customer_id=?")){
+    update.setString(1,json.writeValueAsString(changed));update.setString(2,"CUS-1001");update.executeUpdate();
+    try{
+     var reopened=new EmployeeCustomerRepository(json,sqlite.toString());
+     assertEquals("SQLite persistence proof",reopened.find("QWERT1234L",true).orElseThrow().basicInformation().get("fullName"));
+     mvc.perform(post("/api/employee/customers/pan-lookup").header("Authorization",auth).contentType("application/json").content("{\"panNumber\":\"QWERT1234L\"}"))
+      .andExpect(status().isOk()).andExpect(jsonPath("$.data.basicInformation.fullName").value("SQLite persistence proof"));
+    }finally{update.setString(1,original);update.executeUpdate();}
+   }
+  }
+ }
 }
 

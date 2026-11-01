@@ -55,7 +55,7 @@ void main() {
       await tab(2);
       expect(find.text('2500000'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
-      auth.dispose();
+      auth.onDelete();
     });
   }
   testWidgets('employee sees PAN destination', (tester) async {
@@ -73,6 +73,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text(S.getOtp), findsOneWidget);
     await tester.pumpWidget(const SizedBox());
-    auth.dispose();
+    auth.onDelete();
   });
 }

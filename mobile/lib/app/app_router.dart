@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+import 'shell_controller.dart';
 import '../features/employee/pan_details_screen.dart';
 import '../core/theme/app_colors.dart';
 import '../core/widgets/app_backdrop.dart';
@@ -18,9 +20,11 @@ class AppRouter extends StatelessWidget {
   const AppRouter({super.key, required this.auth});
   final AuthController auth;
   @override
-  Widget build(BuildContext context) => ListenableBuilder(
-    listenable: auth,
-    builder: (_, _) {
+  Widget build(BuildContext context) => GetBuilder<AuthController>(
+    init: auth,
+    global: false,
+    autoRemove: false,
+    builder: (_) {
       if (auth.user == null) return LoginScreen(auth: auth);
       if (auth.user!.isSpecial) {
         return PanDetailsScreen(auth: auth);
@@ -38,7 +42,16 @@ class BorrowerShell extends StatefulWidget {
 }
 
 class _BorrowerShellState extends State<BorrowerShell> {
-  int selected = 0, generation = 0;
+  final controller = ShellController()..onStart.call();
+  int get selected => controller.selected;
+  set selected(int value) => controller.selected = value;
+  int get generation => controller.generation;
+  @override
+  void dispose() {
+    controller.onDelete();
+    super.dispose();
+  }
+
   static const icons = [
     Icons.home_outlined,
     Icons.account_balance_outlined,
@@ -47,7 +60,14 @@ class _BorrowerShellState extends State<BorrowerShell> {
     Icons.lightbulb_outline,
   ];
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => GetBuilder<ShellController>(
+    init: controller,
+    global: false,
+    autoRemove: false,
+    builder: (_) => buildContent(context),
+  );
+
+  Widget buildContent(BuildContext context) {
     final loan = LoanRepository().loan,
         wide = MediaQuery.sizeOf(context).width >= AppDimensions.railBreakpoint;
     return AppBackdrop(
@@ -78,7 +98,8 @@ class _BorrowerShellState extends State<BorrowerShell> {
                 NavigationRail(
                   extended: MediaQuery.sizeOf(context).width > 1200,
                   selectedIndex: selected,
-                  onDestinationSelected: (v) => setState(() => selected = v),
+                  onDestinationSelected: (v) =>
+                      controller.change(() => selected = v),
                   labelType: MediaQuery.sizeOf(context).width > 1200
                       ? NavigationRailLabelType.none
                       : NavigationRailLabelType.all,
@@ -100,7 +121,8 @@ class _BorrowerShellState extends State<BorrowerShell> {
                               HomeScreen(
                                 loan: loan,
                                 name: widget.auth.user!.name,
-                                onNavigate: (v) => setState(() => selected = v),
+                                onNavigate: (v) =>
+                                    controller.change(() => selected = v),
                               ),
                               MyLoanScreen(loan: loan),
                               ProtectionScreen(loan: loan),
@@ -128,7 +150,8 @@ class _BorrowerShellState extends State<BorrowerShell> {
             ? null
             : NavigationBar(
                 selectedIndex: selected,
-                onDestinationSelected: (v) => setState(() => selected = v),
+                onDestinationSelected: (v) =>
+                    controller.change(() => selected = v),
                 destinations: List.generate(
                   5,
                   (i) => NavigationDestination(
@@ -141,4 +164,3 @@ class _BorrowerShellState extends State<BorrowerShell> {
     );
   }
 }
-

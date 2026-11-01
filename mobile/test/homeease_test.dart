@@ -40,7 +40,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(auth.user!.isSpecial, isFalse);
     await tester.pumpWidget(const SizedBox());
-    auth.dispose();
+    auth.onDelete();
   });
   test('primary action and secondary text have accessible contrast', () {
     final c = AppTheme.light.colorScheme;

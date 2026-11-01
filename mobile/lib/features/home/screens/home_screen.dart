@@ -122,23 +122,10 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SectionTitle(S.repayTitle),
-                  Text(S.repayBody),
-                  TextButton(
-                    onPressed: () => onNavigate(3),
-                    child: Text(S.open),
-                  ),
-                ],
-              ),
-            ),
-            AppCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
                   const SectionTitle(S.missed),
                   Text(S.missedBody),
                   TextButton(
-                    onPressed: () => onNavigate(4),
+                    onPressed: () => onNavigate(3),
                     child: Text(S.open),
                   ),
                 ],

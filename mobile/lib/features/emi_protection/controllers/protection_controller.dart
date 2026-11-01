@@ -125,7 +125,7 @@ class ProtectionController extends ScreenController {
             ? S.targetImpossible
             : contribution == 0
             ? S.targetAlready
-            : '${S.required}: ${currency(contribution, decimals: true)}';
+            : 'Approximately ${currency(contribution, decimals: true)} extra per month until reset date: ${displayDate(reset)}';
       }
       change(() {
         result = next;

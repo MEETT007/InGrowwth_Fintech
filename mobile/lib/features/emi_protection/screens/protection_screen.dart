@@ -70,7 +70,7 @@ class _ProtectionScreenState extends State<ProtectionScreen> {
           Metric(S.atReset, currency(r.atReset(plan))),
           const SizedBox(height: 16),
           Metric(
-            S.remaining,
+            'Remaining tenure at rate reset',
             S.monthsCount((plan.months - r.resetMonth + 1).clamp(0, 1200)),
           ),
           const SizedBox(height: 16),

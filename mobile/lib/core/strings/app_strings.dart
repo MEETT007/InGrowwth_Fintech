@@ -7,10 +7,9 @@ abstract final class S {
     'Home',
     'My Loan',
     'EMI Protection',
-    'Repayment Plan',
-    'Help & Insights',
+    'Repay',
   ];
-  static const shortNav = ['Home', 'My Loan', 'Protect', 'Repay', 'Help'];
+  static const shortNav = ['Home', 'My Loan', 'Protect', 'Repay'];
   static const loginTitle = 'Your home loan,\nmade simple.',
       loginBody =
           'Understand today. Plan for tomorrow. Take the next step with confidence.';
@@ -123,7 +122,7 @@ abstract final class S {
       reserveSuffix = 'months of entered essential expenses. Keep a reserve that suits your household; this tool does not set a universal minimum.',
       laterEmi = 'EMI after first extra payment',
       repaymentAssumptions = 'Monthly reducing balance, constant current rate, paise rounding. Extras follow the EMI; a lump sum posts in the selected month. Ongoing extras continue even if the scheduled EMI decreases. No fees or taxes included.';
-  static const helpTitle = 'Confidence starts with clarity.',
+  static const helpTitle = 'Repay',
       helpBody = 'Simple answers for real-life home-loan questions.',
       scoreTitle = 'Loan Freedom Score',
       scoreNote =
@@ -144,7 +143,7 @@ abstract final class S {
       ];
   static const charges = 'Missed EMI charge analyzer',
       chargesBody =
-          'Enter terms from your contract. Leave unknown charges blank; blank does not mean free.',
+          'Demo presets: Rs 500 payment-return fee, Rs 0 flat penalty and 18% tax on fees. Illustrative values; confirm actual charges with your lender. Totals update automatically.',
       overdue = 'Overdue amount (₹)',
       days = 'Days past due',
       product = 'Loan product',
@@ -162,7 +161,7 @@ abstract final class S {
       chargesTotal = 'Subtotal of entered charges',
       amountToClear = 'Overdue principal/EMI + entered charges',
       chargeDisclaimer =
-          'Actual charges depend on your lender agreement and policy. This illustration applies entered tax only to return and penal fees, and simple interest on overdue amount for days/365. Verify the taxable basis, permitted charges and rounding with your lender. Unknown items are excluded from the subtotal.',
+          'This estimate applies the preset tax rate to the payment-return and flat penal charges. Actual charges depend on your lender agreement and policy. Unknown items are excluded from the subtotal.',
       waiver = 'Draft a waiver request',
       reason = 'Why was the payment missed?',
       draft = 'Prepare draft',

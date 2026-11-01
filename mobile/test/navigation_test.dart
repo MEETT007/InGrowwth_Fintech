@@ -7,7 +7,7 @@ import 'package:home_finance/features/auth/controllers/auth_controller.dart';
 
 void main() {
   for (final size in [const Size(375, 812), const Size(1440, 900)]) {
-    testWidgets('five sections preserve inputs at $size', (tester) async {
+    testWidgets('four sections preserve inputs at $size', (tester) async {
       tester.view.physicalSize = size;
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
@@ -49,8 +49,6 @@ void main() {
       final field = find.widgetWithText(TextField, S.principalInput);
       await tester.enterText(field, '2500000');
       await tab(3);
-      expect(find.text(S.repayHeading), findsOneWidget);
-      await tab(4);
       expect(find.text(S.helpTitle), findsOneWidget);
       await tab(2);
       expect(find.text('2500000'), findsOneWidget);

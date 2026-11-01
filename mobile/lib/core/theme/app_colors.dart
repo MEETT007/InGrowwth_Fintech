@@ -4,6 +4,7 @@ abstract final class AppColors {
   static const transparent = Color(0x00000000);
   static const backdropBlue = Color(0xFFBBDDF8);
   static const sky = Color(0xFF64B5F6);
+  static const buttonBlue = Color(0xFF90CAF9);
   static const lightBlue = Color(0xFFE3F2FD);
   static const deepBlue = Color(0xFF1976D2);
   static const black = Color(0xFF000000);

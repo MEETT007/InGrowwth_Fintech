@@ -83,6 +83,7 @@ abstract final class AppTheme {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
+        backgroundColor: AppColors.buttonBlue,
         foregroundColor: AppColors.black,
         textStyle: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
         minimumSize: const Size(48, 52),

@@ -68,14 +68,10 @@ void main() {
         ),
       ),
     );
-    await tester.scrollUntilVisible(
-      find.text(S.calculate),
-      300,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await tester.tap(find.text(S.calculate));
     await tester.pumpAndSettle();
-    expect(find.text(S.unknown), findsNWidgets(4));
+    expect(find.text('500'), findsOneWidget);
+    expect(find.text('18'), findsOneWidget);
+    expect(find.text(S.unknown), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }

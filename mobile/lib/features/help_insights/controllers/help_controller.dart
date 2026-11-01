@@ -14,15 +14,14 @@ class ChargeAnalyzerController extends ScreenController {
   final days = TextEditingController(text: '10'),
       lender = TextEditingController(),
       product = TextEditingController(),
-      returned = TextEditingController(),
-      penal = TextEditingController(),
-      tax = TextEditingController(),
-      rate = TextEditingController(),
+      returned = TextEditingController(text: '500'),
+      penal = TextEditingController(text: '0'),
+      tax = TextEditingController(text: '18'),
       reason = TextEditingController(),
       draft = TextEditingController();
   ChargeEstimate? result;
   String? error;
-  bool contractual = false, dirty = true;
+
   int enteredOverdue = 0;
   @override
   void onInit() {
@@ -35,6 +34,7 @@ class ChargeAnalyzerController extends ScreenController {
     overdue = TextEditingController(text: emi.text);
     lender.text = l.lender;
     product.text = l.nickname;
+    calculate();
   }
 
   @override
@@ -48,7 +48,6 @@ class ChargeAnalyzerController extends ScreenController {
       returned,
       penal,
       tax,
-      rate,
       reason,
       draft,
     ]) {
@@ -57,7 +56,7 @@ class ChargeAnalyzerController extends ScreenController {
     super.onClose();
   }
 
-  void changed() => change(() => dirty = true);
+  void changed() => calculate();
   void calculate() {
     try {
       final o = parseMoney(overdue.text),
@@ -79,16 +78,17 @@ class ChargeAnalyzerController extends ScreenController {
         returnFee: optional(returned),
         penal: optional(penal),
         taxBps: optional(tax),
-        overdueRateBps: optional(rate),
       );
       change(() {
         result = next;
         enteredOverdue = o;
-        dirty = false;
         error = null;
       });
     } on FormatException {
-      change(() => error = S.invalid);
+      change(() {
+        result = null;
+        error = S.invalid;
+      });
     }
   }
 }

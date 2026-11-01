@@ -13,7 +13,7 @@ import '../features/auth/screens/login_screen.dart';
 import '../features/home/screens/home_screen.dart';
 import '../features/my_loan/screens/my_loan_screen.dart';
 import '../features/emi_protection/screens/protection_screen.dart';
-import '../features/repayment/screens/repayment_screen.dart';
+
 import '../features/help_insights/screens/help_screen.dart';
 
 class AppRouter extends StatelessWidget {
@@ -57,7 +57,7 @@ class _BorrowerShellState extends State<BorrowerShell> {
     Icons.account_balance_outlined,
     Icons.shield_sharp,
     Icons.trending_down,
-    Icons.lightbulb_outline,
+
   ];
   @override
   Widget build(BuildContext context) => GetBuilder<ShellController>(
@@ -104,7 +104,7 @@ class _BorrowerShellState extends State<BorrowerShell> {
                       ? NavigationRailLabelType.none
                       : NavigationRailLabelType.all,
                   destinations: List.generate(
-                    5,
+                    S.nav.length,
                     (i) => NavigationRailDestination(
                       icon: Icon(icons[i]),
                       label: Text(S.nav[i]),
@@ -126,7 +126,7 @@ class _BorrowerShellState extends State<BorrowerShell> {
                               ),
                               MyLoanScreen(loan: loan),
                               ProtectionScreen(loan: loan),
-                              RepaymentScreen(loan: loan),
+
                               HelpScreen(loan: loan),
                             ]
                             .asMap()
@@ -134,7 +134,7 @@ class _BorrowerShellState extends State<BorrowerShell> {
                             .map(
                               (entry) => PageEntrance(
                                 revision: entry.key == selected
-                                    ? selected + generation * 5
+                                    ? selected + generation * S.nav.length
                                     : -1,
                                 child: entry.value,
                               ),
@@ -153,7 +153,7 @@ class _BorrowerShellState extends State<BorrowerShell> {
                 onDestinationSelected: (v) =>
                     controller.change(() => selected = v),
                 destinations: List.generate(
-                  5,
+                  S.nav.length,
                   (i) => NavigationDestination(
                     icon: Icon(icons[i]),
                     label: S.shortNav[i],
